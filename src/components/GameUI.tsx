@@ -1,7 +1,5 @@
 'use client';
 
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FC, useState, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -13,14 +11,19 @@ interface GameUIProps {
   username: string;
 }
 
+// Simple wallet button placeholder
+const WalletButton = () => (
+  <button className="px-6 py-3 bg-gradient-to-r from-[#9945FF] to-[#14F195] rounded-xl font-semibold hover:opacity-90 transition-opacity">
+    🔗 Connect Wallet
+  </button>
+);
+
 export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, elapsedTime, username }) => {
-  const { connected, publicKey } = useWallet();
   const [claiming, setClaiming] = useState(false);
   const [claimed, setClaimed] = useState(false);
   const [inputUsername, setInputUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
 
-  // Generate random username on mount
   useEffect(() => {
     const adjectives = ['Swift', 'Bouncy', 'Lucky', 'Speedy', 'Brave', 'Cool', 'Epic', 'Mega', 'Super', 'Turbo'];
     const nouns = ['Bean', 'Runner', 'Jumper', 'Racer', 'Champion', 'Star', 'Hero', 'Legend', 'Master', 'Pro'];
@@ -52,18 +55,16 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
   };
 
   const handleClaim = async () => {
-    if (!connected || !publicKey) return;
     setClaiming(true);
     await new Promise(resolve => setTimeout(resolve, 2000));
     setClaimed(true);
     setClaiming(false);
   };
 
-  // Menu screen - LOLBeans style
+  // Menu screen
   if (gameState === 'menu') {
     return (
       <div className="game-ui fixed inset-0 flex items-center justify-center overflow-hidden">
-        {/* Animated background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a3e] via-[#2d1f5e] to-[#1a1a3e]">
           <div className="absolute inset-0 opacity-20">
             {[...Array(20)].map((_, i) => (
@@ -84,7 +85,6 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
         </div>
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-6 max-w-md w-full">
-          {/* Logo */}
           <div className="relative w-56 h-56 md:w-64 md:h-64 mb-8 drop-shadow-2xl">
             <Image
               src="/solbeans-logo.png"
@@ -95,7 +95,6 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             />
           </div>
 
-          {/* Prize Pool Banner */}
           <div className="bg-gradient-to-r from-[#9945FF] to-[#14F195] p-1 rounded-2xl mb-10">
             <div className="bg-[#1a1a2e] rounded-xl px-10 py-5">
               <p className="text-gray-400 text-sm">🏆 Prize Pool</p>
@@ -103,7 +102,6 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             </div>
           </div>
 
-          {/* Username Input */}
           <div className="w-full mb-8">
             <div className="relative">
               <input
@@ -138,7 +136,6 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             )}
           </div>
 
-          {/* Play Button */}
           <button
             onClick={handlePlay}
             className="w-full py-6 text-4xl font-black uppercase tracking-wider bg-gradient-to-r from-[#14F195] to-[#9945FF] rounded-2xl hover:scale-105 hover:shadow-lg hover:shadow-[#14F195]/30 transition-all active:scale-95 text-white shadow-xl mb-10"
@@ -146,20 +143,11 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             ▶ PLAY
           </button>
 
-          {/* Wallet Connection */}
           <div className="flex flex-col items-center gap-3 mb-8">
-            <WalletMultiButton />
-            {!connected && (
-              <p className="text-gray-500 text-sm">Optional - connect to claim SOL rewards</p>
-            )}
-            {connected && publicKey && (
-              <p className="text-[#14F195] text-sm">
-                ✓ {publicKey.toBase58().slice(0, 4)}...{publicKey.toBase58().slice(-4)}
-              </p>
-            )}
+            <WalletButton />
+            <p className="text-gray-500 text-sm">Connect to claim SOL rewards</p>
           </div>
 
-          {/* Controls */}
           <div className="flex justify-center gap-10 text-gray-400 text-base">
             <span>🎮 WASD</span>
             <span>⬆️ Space</span>
@@ -174,14 +162,11 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
   if (gameState === 'playing') {
     return (
       <div className="game-ui">
-        {/* Top bar */}
         <div className="fixed top-4 left-0 right-0 flex justify-between items-start px-4">
-          {/* Username */}
           <div className="bg-black/70 backdrop-blur px-4 py-2 rounded-xl">
             <span className="text-[#14F195] font-bold">{username}</span>
           </div>
 
-          {/* Timer + Prize */}
           <div className="flex gap-3 items-center">
             <div className="bg-black/70 backdrop-blur px-6 py-3 rounded-xl">
               <span className="text-3xl font-mono text-white">{formatTime(elapsedTime)}</span>
@@ -192,13 +177,11 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             </div>
           </div>
 
-          {/* Wallet */}
           <div>
-            <WalletMultiButton />
+            <WalletButton />
           </div>
         </div>
 
-        {/* Controls reminder */}
         <div className="fixed bottom-4 left-4 bg-black/50 backdrop-blur px-4 py-2 rounded-lg text-sm text-gray-400">
           WASD move • Space jump • ESC pause
         </div>
@@ -211,22 +194,18 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
     return (
       <div className="game-ui fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm">
         <div className="text-center space-y-6 p-8 bg-gradient-to-br from-[#1a1a2e] to-[#0E0E10] rounded-3xl border border-[#14F195]/30 max-w-md mx-4">
-          {/* Trophy */}
           <div className="text-7xl animate-bounce">🏆</div>
           
-          {/* Winner info */}
           <div>
             <p className="text-gray-400">Winner</p>
             <h2 className="text-3xl font-bold text-[#14F195]">{username}</h2>
           </div>
 
-          {/* Time */}
           <div className="bg-black/50 rounded-xl py-3 px-6 inline-block">
             <p className="text-gray-400 text-sm">Time</p>
             <p className="text-4xl font-mono text-white">{formatTime(elapsedTime)}</p>
           </div>
 
-          {/* Prize */}
           <div className="p-4 bg-gradient-to-r from-[#9945FF]/20 to-[#14F195]/20 rounded-xl border border-[#14F195]/30">
             <p className="text-gray-400 text-sm mb-1">You Won</p>
             <p className="text-4xl font-bold bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent">
@@ -234,22 +213,17 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
             </p>
           </div>
 
-          {/* Claim button */}
           {!claimed ? (
             <button
               onClick={handleClaim}
-              disabled={claiming || !connected}
+              disabled={claiming}
               className={`w-full px-6 py-4 text-xl font-bold rounded-xl transition-all ${
-                !connected
-                  ? 'bg-gray-600 cursor-not-allowed'
-                  : claiming 
-                    ? 'bg-gray-600 cursor-wait' 
-                    : 'bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:scale-105'
+                claiming 
+                  ? 'bg-gray-600 cursor-wait' 
+                  : 'bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:scale-105'
               }`}
             >
-              {!connected ? (
-                'Connect Wallet to Claim'
-              ) : claiming ? (
+              {claiming ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -262,14 +236,11 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
               )}
             </button>
           ) : (
-            <div className="space-y-4">
-              <div className="p-4 bg-[#14F195]/20 rounded-xl border border-[#14F195]">
-                <p className="text-[#14F195] font-bold">✓ 0.1 SOL sent to your wallet!</p>
-              </div>
+            <div className="p-4 bg-[#14F195]/20 rounded-xl border border-[#14F195]">
+              <p className="text-[#14F195] font-bold">✓ 0.1 SOL sent to your wallet!</p>
             </div>
           )}
 
-          {/* Play again */}
           <button
             onClick={() => {
               setClaimed(false);
@@ -279,12 +250,6 @@ export const GameUI: FC<GameUIProps> = ({ gameState, onStartGame, onRestart, ela
           >
             🔄 Play Again
           </button>
-
-          {!connected && (
-            <div className="pt-2">
-              <WalletMultiButton />
-            </div>
-          )}
         </div>
       </div>
     );

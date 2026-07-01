@@ -2,10 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WalletProvider } from '@/components/WalletProvider';
 import { GameUI } from '@/components/GameUI';
 
-// Dynamic import for the 3D game to avoid SSR issues
 const Game = dynamic(() => import('@/components/Game').then(mod => mod.Game), {
   ssr: false,
   loading: () => (
@@ -27,7 +25,6 @@ export default function Home() {
   const startTimeRef = useRef<number | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
-  // Timer logic
   useEffect(() => {
     if (gameState === 'playing') {
       startTimeRef.current = Date.now();
@@ -68,20 +65,18 @@ export default function Home() {
   }, []);
 
   return (
-    <WalletProvider>
-      <main className="w-full h-screen relative overflow-hidden">
-        <Game 
-          onWin={handleWin} 
-          gameState={gameState}
-        />
-        <GameUI 
-          gameState={gameState}
-          onStartGame={handleStartGame}
-          onRestart={handleRestart}
-          elapsedTime={elapsedTime}
-          username={username}
-        />
-      </main>
-    </WalletProvider>
+    <main className="w-full h-screen relative overflow-hidden">
+      <Game 
+        onWin={handleWin} 
+        gameState={gameState}
+      />
+      <GameUI 
+        gameState={gameState}
+        onStartGame={handleStartGame}
+        onRestart={handleRestart}
+        elapsedTime={elapsedTime}
+        username={username}
+      />
+    </main>
   );
 }
