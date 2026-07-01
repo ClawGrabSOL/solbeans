@@ -19,12 +19,10 @@ body {
   overflow: hidden;
 }
 
-/* Hide scrollbars */
 ::-webkit-scrollbar {
   display: none;
 }
 
-/* Custom animations */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -32,41 +30,6 @@ body {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
-}
-
-.wallet-adapter-button {
-  background: linear-gradient(135deg, var(--sol-purple), var(--sol-green)) !important;
-  border-radius: 12px !important;
-  font-weight: 600 !important;
-  padding: 12px 24px !important;
-}
-
-.wallet-adapter-button:hover {
-  opacity: 0.9 !important;
-}
-
-.wallet-adapter-modal-wrapper {
-  background: rgba(0, 0, 0, 0.8) !important;
-}
-
-.wallet-adapter-modal-container {
-  background: #1a1a2e !important;
-  border: 1px solid var(--sol-purple) !important;
-  border-radius: 16px !important;
-}
-
-.wallet-adapter-modal-title {
-  color: white !important;
-}
-
-.wallet-adapter-modal-list li {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-radius: 12px !important;
-  margin: 8px 0 !important;
-}
-
-.wallet-adapter-modal-list li:hover {
-  background: rgba(153, 69, 255, 0.2) !important;
 }
 
 .game-ui {
